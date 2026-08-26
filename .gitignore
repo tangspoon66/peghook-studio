@@ -1,0 +1,14 @@
+.venv/
+__pycache__/
+*.py[cod]
+.DS_Store
+*.log
+_diag_*.py
+converted.stl
+*.3mf
+*.f3d
+加长吸嘴_*.step
+README_碗支架.md
+build/
+dist/
+*.spec
