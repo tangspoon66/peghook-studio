@@ -12,6 +12,16 @@ PegHook Studio 将这个过程集中到一个 3D 工作台中：选择主体贴�
 
 当前内置 1.2 mm 和 5 mm 背钩，同时支持用户手动导入其他厚度、其他形状的 STL 或 STEP 背钩。
 
+## 界面预览
+
+下面的截图来自当前开发版本，用于展示工作台和背钩操纵器的交互布局。实际界面会随版本继续调整。
+
+![PegHook Studio 3D 工作台](docs/screenshots/workbench-example.png)
+
+![背钩三轴操纵器与数值编辑器](docs/screenshots/gizmo-editor-example.png)
+
+![平移和旋转的紧凑数值面板](docs/screenshots/transform-panel.png)
+
 ## 当前功能
 
 - 导入主体 STL。
@@ -43,7 +53,9 @@ STL 是当前最稳定、最主要的工作格式。STEP 通过 OpenCascade 三�
 
 ## 从源码在本地运行
 
-建议使用 Python 3.11。先进入项目目录：
+建议使用 Python 3.11（当前依赖组合和 PySide6/VTK 在此版本上验证最充分）。Python 3.12 和 3.13 通常也可以运行，但需要重新安装依赖并自行处理个别兼容性差异。Python 3.14 发布较新，部分科学计算和三维依赖可能尚未提供对应轮子；如果使用 3.14 安装失败，请优先改用 3.11，而不是混用不同 Python 版本的虚拟环境。无论选择哪个版本，都应为项目创建独立虚拟环境。
+
+先进入项目目录：
 
 ### macOS
 
