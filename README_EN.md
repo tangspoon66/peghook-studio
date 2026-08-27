@@ -14,11 +14,7 @@ The application includes 1.2 mm and 5 mm replacement hooks. Users can import cus
 
 These images are from the current development build and show the workbench, transform gizmo, and numeric transform panel. The interface may continue to evolve.
 
-![PegHook Studio workbench](docs/screenshots/workbench-example.png)
-
-![3D transform gizmo](docs/screenshots/gizmo-editor-example.png)
-
-![Compact transform panel](docs/screenshots/transform-panel.png)
+![PegHook Studio main workbench](docs/screenshots/peghook-studio-main.png)
 
 ## Features
 

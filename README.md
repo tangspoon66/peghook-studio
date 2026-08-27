@@ -16,11 +16,7 @@ PegHook Studio 将这个过程集中到一个 3D 工作台中：选择主体贴�
 
 下面的截图来自当前开发版本，用于展示工作台和背钩操纵器的交互布局。实际界面会随版本继续调整。
 
-![PegHook Studio 3D 工作台](docs/screenshots/workbench-example.png)
-
-![背钩三轴操纵器与数值编辑器](docs/screenshots/gizmo-editor-example.png)
-
-![平移和旋转的紧凑数值面板](docs/screenshots/transform-panel.png)
+![PegHook Studio 主工作台](docs/screenshots/peghook-studio-main.png)
 
 ## 当前功能
 
