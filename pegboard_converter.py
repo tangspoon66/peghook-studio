@@ -76,15 +76,24 @@ class ConverterModel:
     @staticmethod
     def load_mesh(path):
         path = str(path)
-        if Path(path).suffix.lower() in {".step", ".stp"}:
+        suffix = Path(path).suffix.lower()
+        if suffix in {".step", ".stp"}:
             return ConverterModel.load_step_mesh(path)
-        obj = trimesh.load(path, force="scene")
+        if suffix == ".3mf":
+            try:
+                obj = trimesh.load(path, file_type="3mf", force="scene")
+            except ModuleNotFoundError as exc:
+                if exc.name == "lxml":
+                    raise ValueError("3MF 支持需要 lxml，请运行：python -m pip install lxml") from exc
+                raise
+        else:
+            obj = trimesh.load(path, force="scene")
         if isinstance(obj, trimesh.Scene):
             meshes = [g for g in obj.geometry.values() if isinstance(g, trimesh.Trimesh)]
             if not meshes: raise ValueError("文件中没有可用三角网格")
             obj = trimesh.util.concatenate(meshes)
         if not isinstance(obj, trimesh.Trimesh) or not len(obj.faces):
-            raise ValueError("不是有效 STL")
+            raise ValueError("不是有效的 STL 或 3MF 网格")
         obj.remove_unreferenced_vertices(); return obj
 
     @staticmethod
@@ -833,7 +842,7 @@ def run_gui():
     class Window(QtWidgets.QMainWindow):
         def __init__(self):
             print("[窗口] 初始化主窗口...")
-            super().__init__(); self.setWindowTitle("洞洞板背钩转换器（STL 原型）"); self.resize(1200, 800)
+            super().__init__(); self.setWindowTitle("PegHook Studio - 洞洞板背钩转换器"); self.resize(1200, 800)
             QtWidgets.QApplication.instance().installEventFilter(self)
             print("[窗口] ✓ 主窗口创建成功")
             self.m = ConverterModel(); self.pick_enabled = False; self.hook_select_enabled = False; self.hook_actor = None
@@ -979,7 +988,7 @@ def run_gui():
             body_box = QtWidgets.QGroupBox("主体处理")
             body_layout = QtWidgets.QGridLayout(body_box)
             body_layout.setHorizontalSpacing(8); body_layout.setVerticalSpacing(8)
-            body_import = QtWidgets.QPushButton("导入主体 STL"); body_import.setObjectName("primaryButton"); body_import.clicked.connect(self.load_body)
+            body_import = QtWidgets.QPushButton("导入主体模型"); body_import.setObjectName("primaryButton"); body_import.clicked.connect(self.load_body)
             face_pick = QtWidgets.QPushButton("选择贴合面"); face_pick.clicked.connect(self.pick_mode)
             self.depth = self.setup_spinbox(QtWidgets.QDoubleSpinBox()); self.depth.setRange(-1000, 1000); self.depth.setDecimals(3); self.depth.setSuffix(" mm")
             cut_button = QtWidgets.QPushButton("切除外侧背钩"); cut_button.setObjectName("cutButton"); cut_button.clicked.connect(self.cut)
@@ -1440,7 +1449,7 @@ def run_gui():
         def pick_mount_face_at(self, pos):
             """从统一的左键分发器拾取主体三角面，不依赖 PyVista 回调。"""
             if self.body_actor is None:
-                self.info.setText("请先导入主体 STL")
+                self.info.setText("请先导入主体模型")
                 return False
             picker = self.body_picker
             picker.InitializePickList(); picker.AddPickList(self.body_actor); picker.PickFromListOn()
@@ -1500,7 +1509,7 @@ def run_gui():
             return True
 
         def load_body(self):
-            p, _ = QtWidgets.QFileDialog.getOpenFileName(self, "主体 STL", "", "STL (*.stl)")
+            p, _ = QtWidgets.QFileDialog.getOpenFileName(self, "主体模型", "", "3D 模型 (*.stl *.step *.stp *.3mf);;STL (*.stl);;STEP (*.step *.stp);;3MF (*.3mf)")
             if p:
                 self.m.remember(); self.m.set_body(p)
                 # 主体更换后旧贴合面失效，隐藏自动尺寸标注。
@@ -1509,7 +1518,7 @@ def run_gui():
                 self.refresh(); self.info.setText(Path(p).name)
                 self.record_operation("导入主体：" + Path(p).name)
         def load_hook(self):
-            p, _ = QtWidgets.QFileDialog.getOpenFileName(self, "替换背钩模型", "", "STL/STEP (*.stl *.step *.stp)")
+            p, _ = QtWidgets.QFileDialog.getOpenFileName(self, "替换背钩模型", "", "3D 模型 (*.stl *.step *.stp *.3mf);;STL (*.stl);;STEP (*.step *.stp);;3MF (*.3mf)")
             if p:
                 if self.gizmo_visible: self.hide_gizmo()
                 self.m.remember(); self.m.set_hook(p)
@@ -1623,7 +1632,7 @@ def run_gui():
                 QtWidgets.QMessageBox.warning(self, "解散失败", str(exc))
         def pick_mode(self):
             if self.m.working is None:
-                self.info.setText("请先导入主体 STL")
+                self.info.setText("请先导入主体模型")
                 return
             if self.gizmo_visible:
                 self.hide_gizmo()
@@ -1648,7 +1657,7 @@ def run_gui():
 
         def show_gizmo(self):
             if self.m.hook is None:
-                self.info.setText("请先导入替换背钩 STL")
+                self.info.setText("请先导入替换背钩模型")
                 return
             if not self.m.selected_hook_indices:
                 self.info.setText("请先点击选择一个背钩")

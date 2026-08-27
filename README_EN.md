@@ -18,8 +18,8 @@ These images are from the current development build and show the workbench, tran
 
 ## Features
 
-- Import a body STL.
-- Use built-in 1.2 mm or 5 mm hooks, or import a custom hook.
+- Import a body in STL, STEP, or 3MF format.
+- Use built-in 1.2 mm or 5 mm hooks, or import a custom STL, STEP, or 3MF hook.
 - Select a mounting face on the body.
 - Cut the outside hook using a selected plane and depth.
 - Automatically attach a replacement hook to the selected face.
@@ -32,7 +32,7 @@ These images are from the current development build and show the workbench, tran
 
 ## Supported formats
 
-STL is the primary and most stable format. STEP files are triangulated through OpenCascade and then processed as meshes; complex or unusual STEP topology may affect results. 3MF is not currently supported.
+STL is the primary and most stable format. STEP files are triangulated through OpenCascade and then processed as meshes. 3MF files are read through `trimesh` and `lxml`; multi-part 3MF scenes are combined into one editable mesh. Complex or unusual STEP/3MF topology may affect results.
 
 ## Typical workflow
 
