@@ -227,7 +227,13 @@ class ConverterModel:
         背钩转换的合理默认是保留体积/面积较大的主体，移除外侧的小结构。
         """
         if self.working is None or self.mount_point is None: raise ValueError("请先选择主体贴合面")
-        point = self.mount_point - self.mount_normal * depth
+        # 严格落在 STL 三角形共面位置时，slice_plane 的封口可能产生
+        # 重叠/零面积三角形。向主体内侧让出 0.1 mm 容差，避免破面；
+        # 用户输入非零深度时仍完全按输入值执行。
+        effective_depth = float(depth)
+        if abs(effective_depth) < 1e-9:
+            effective_depth = 0.1
+        point = self.mount_point - self.mount_normal * effective_depth
         positive = self.working.slice_plane(point, self.mount_normal, cap=True)
         negative = self.working.slice_plane(point, -self.mount_normal, cap=True)
         candidates = [m for m in (positive, negative) if m is not None and len(m.faces)]
@@ -364,7 +370,11 @@ class ConverterModel:
         return before, after
 
     def combined(self):
-        if self.working is None or self.hook is None: raise ValueError("主体和背钩都必须存在")
+        if self.working is None:
+            raise ValueError("请先导入主体模型")
+        # 切除旧背钩后可以直接导出纯主体，不要求必须先导入新背钩。
+        if self.hook is None or not self.hook_parts:
+            return self.working.copy()
         return trimesh.util.concatenate([self.working, self.hook])
 
     def export(self, path): self.combined().export(path)
@@ -1053,15 +1063,16 @@ def run_gui():
             history_layout.addWidget(self.operation_list)
             self.history_popup.hide()
             self.undo_shortcuts = []
-            for parent in (self, self.plot):
-                shortcut = QtGui.QShortcut(QtGui.QKeySequence.Undo, parent)
-                shortcut.setContext(QtCore.Qt.ApplicationShortcut)
-                shortcut.activated.connect(self.undo)
-                self.undo_shortcuts.append(shortcut)
-                redo_shortcut = QtGui.QShortcut(QtGui.QKeySequence("Meta+Shift+Z"), parent)
-                redo_shortcut.setContext(QtCore.Qt.ApplicationShortcut)
-                redo_shortcut.activated.connect(self.redo)
-                self.undo_shortcuts.append(redo_shortcut)
+            # 显式注册 macOS 快捷键，避免 QKeySequence.Undo 在 VTK 原生窗口
+            # 或不同 Qt 平台映射下无法识别 Cmd+Z。
+            undo_shortcut = QtGui.QShortcut(QtGui.QKeySequence("Meta+Z"), self)
+            undo_shortcut.setContext(QtCore.Qt.ApplicationShortcut)
+            undo_shortcut.activated.connect(self.undo)
+            self.undo_shortcuts.append(undo_shortcut)
+            redo_shortcut = QtGui.QShortcut(QtGui.QKeySequence("Meta+Shift+Z"), self)
+            redo_shortcut.setContext(QtCore.Qt.ApplicationShortcut)
+            redo_shortcut.activated.connect(self.redo)
+            self.undo_shortcuts.append(redo_shortcut)
             self.gizmo_editor = QtWidgets.QFrame(self.plot)
             self.gizmo_editor.setObjectName("gizmoEditor")
             self.gizmo_editor.setStyleSheet(
