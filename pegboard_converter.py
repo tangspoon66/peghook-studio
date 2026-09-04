@@ -6,6 +6,16 @@ import numpy as np
 import trimesh
 
 
+def bundled_resource_path(*parts):
+    """Resolve assets both from source checkout and a PyInstaller macOS app."""
+    source_path = Path(__file__).resolve().parent.joinpath(*parts)
+    if source_path.exists():
+        return source_path
+    executable = Path(sys.executable).resolve()
+    app_resource_path = executable.parent.parent / "Resources"
+    return app_resource_path.joinpath(*parts)
+
+
 class ConverterModel:
     def __init__(self):
         self.body = None; self.hook = None; self.working = None
@@ -889,8 +899,8 @@ def run_gui():
             self.orientation_overlay = None
             self.operation_list = None
             self.preset_paths = {
-                "1.2mm": Path(__file__).with_name("preset_hooks") / "peg_hook_1.2mm.step",
-                "5mm": Path(__file__).with_name("preset_hooks") / "peg_hook_5mm.step",
+                "1.2mm": bundled_resource_path("preset_hooks", "peg_hook_1.2mm.step"),
+                "5mm": bundled_resource_path("preset_hooks", "peg_hook_5mm.step"),
             }
             print("[窗口] 开始构建 UI...")
             self._ui()
