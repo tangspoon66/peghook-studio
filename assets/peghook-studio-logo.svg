@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-labelledby="title desc">
+  <title id="title">PegHook Studio logo</title>
+  <desc id="desc">A pegboard panel with holes and an orange replacement hook.</desc>
+  <rect x="56" y="56" width="912" height="912" rx="210" fill="#24384d"/>
+  <rect x="150" y="150" width="724" height="724" rx="126" fill="#eff4f7"/>
+  <g fill="#8293a1">
+    <circle cx="306" cy="296" r="38"/><circle cx="512" cy="296" r="38"/><circle cx="718" cy="296" r="38"/>
+    <circle cx="306" cy="502" r="38"/><circle cx="512" cy="502" r="38"/><circle cx="718" cy="502" r="38"/>
+    <circle cx="306" cy="708" r="38"/><circle cx="512" cy="708" r="38"/><circle cx="718" cy="708" r="38"/>
+  </g>
+  <path d="M436 636V452c0-42 34-76 76-76s76 34 76 76v72h114c45 0 82 37 82 82v44c0 45-37 82-82 82H530c-52 0-94-42-94-94z" fill="#f5a524" stroke="#cc7609" stroke-width="30" stroke-linejoin="round"/>
+  <path d="M512 391v198" fill="none" stroke="#fff4d8" stroke-width="27" stroke-linecap="round"/>
+  <circle cx="512" cy="642" r="19" fill="#fff4d8"/>
+</svg>
