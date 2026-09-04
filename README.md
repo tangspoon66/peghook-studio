@@ -1,6 +1,6 @@
 # PegHook Studio
 
-![PegHook Studio logo](assets/peghook-studio-logo.svg)
+<img src="assets/peghook-studio-logo.svg" alt="PegHook Studio logo" width="128">
 
 洞洞板背钩转换器。PegHook Studio 面向使用宜家洞洞板或类似孔板系统的 3D 打印用户，解决模型主体结构很好、但原模型背钩厚度与自己的洞洞板不匹配的问题。
 

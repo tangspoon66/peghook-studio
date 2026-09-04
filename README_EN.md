@@ -1,6 +1,6 @@
 # PegHook Studio
 
-![PegHook Studio logo](assets/peghook-studio-logo.svg)
+<img src="assets/peghook-studio-logo.svg" alt="PegHook Studio logo" width="128">
 
 PegHook Studio is a desktop workbench for adapting 3D-printed accessories to IKEA-style pegboards and other perforated panels. It addresses a common problem: a useful model has a good main body, but its rear hook is made for a different board thickness. For example, a model may use a 5 mm hook while the user's board requires a 1.2 mm hook.
 
